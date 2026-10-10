@@ -7,7 +7,7 @@ export type NightActionType =
 
 export interface NightActionRequest {
   playerId: string;
-  role: string;
+  role?: string;
   action: NightActionType;
   targetId?: string;
 }
@@ -27,15 +27,11 @@ export class NightActionRuntime {
       action: request.action,
       targetId: request.targetId,
       success: true,
-      metadata: {
-        role: request.role,
-      },
+      metadata: { role: request.role },
     };
   }
 
-  async executeBatch(
-    requests: NightActionRequest[],
-  ): Promise<NightActionResult[]> {
+  async executeBatch(requests: NightActionRequest[]): Promise<NightActionResult[]> {
     return Promise.all(requests.map((request) => this.execute(request)));
   }
 }
