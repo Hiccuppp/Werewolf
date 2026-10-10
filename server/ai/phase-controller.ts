@@ -1,9 +1,18 @@
 import type { PlayerObservation } from './types';
 import type { GameLoopAdapter } from './game-loop-adapter';
 
+export type PhaseActionKind =
+  | 'speech'
+  | 'vote'
+  | 'wolf_kill'
+  | 'seer_check'
+  | 'witch_save'
+  | 'witch_poison'
+  | 'guard_protect';
+
 export interface PhaseActionResult {
   playerId: number;
-  action: string;
+  action: PhaseActionKind;
   target?: number;
   speech?: string;
 }
@@ -37,8 +46,21 @@ export class AIPhaseController {
     const results: PhaseActionResult[] = [];
     for (const playerId of players) {
       const target = await this.adapter.decide(playerId, observations.get(playerId)!);
-      results.push({ playerId, action: 'night_action', target });
+      results.push({ playerId, action: 'wolf_kill', target });
     }
     return results;
+  }
+
+  async collectRoleAction(
+    playerId: number,
+    action: Extract<PhaseActionKind, 'wolf_kill' | 'seer_check' | 'witch_save' | 'witch_poison' | 'guard_protect'>,
+    observation: PlayerObservation,
+  ) {
+    const target = await this.adapter.decide(playerId, observation);
+    return {
+      playerId,
+      action,
+      target,
+    } satisfies PhaseActionResult;
   }
 }
