@@ -39,3 +39,9 @@ export class NightActionRuntime {
     return Promise.all(requests.map((request) => this.execute(request)));
   }
 }
+
+export async function executeNightActions(
+  requests: NightActionRequest[],
+): Promise<NightActionResult[]> {
+  return new NightActionRuntime().executeBatch(requests);
+}
