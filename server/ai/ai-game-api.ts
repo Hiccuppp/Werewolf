@@ -1,4 +1,4 @@
-import { startAIGame } from "./start-ai-game";
+import { startAIGame } from "./start-ai-game.ts";
 
 export interface StartAIGameRequest {
   boardId?: string;
