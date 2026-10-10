@@ -2,7 +2,11 @@ export type AIPhase =
   | 'DAY_SPEECH'
   | 'FREE_DISCUSSION'
   | 'VOTE'
-  | 'NIGHT_ACTION';
+  | 'NIGHT_ACTION'
+  | 'WOLF_ACTION'
+  | 'SEER_CHECK'
+  | 'WITCH_ACTION'
+  | 'GUARD_ACTION';
 
 export interface LLMMessage {
   role: 'system' | 'user' | 'assistant';
