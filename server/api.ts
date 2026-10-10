@@ -1,11 +1,30 @@
 import { getLogs, insertGame, listGames, loadGame, saveError, saveStep } from './repository.ts';
 import { advance, createGame, publicView, TurnError } from '../lib/werewolf/engine.ts';
 import { makeProvider, readConfig } from '../lib/werewolf/provider.ts';
+import { startAIGameApi } from './ai/ai-game-api.ts';
 
 const runningTurns=new Set<string>();
 const json=(body:unknown,status=200,headers:Record<string,string>={})=>Response.json(body,{status,headers:{'Cache-Control':'no-store',...headers}});
 export async function handleApi(request:Request):Promise<Response> {
   const url=new URL(request.url), method=request.method;
+
+  if(url.pathname==='/api/games/ai/start') {
+    if(method!=='POST') return json({error:'不支持的请求方法。'},405);
+    try {
+      const body=await request.json().catch(()=>({})) as Record<string,unknown>;
+      const result=await startAIGameApi({
+        boardId: typeof body.boardId==='string'?body.boardId:undefined,
+        maxRounds: typeof body.maxRounds==='number'?body.maxRounds:undefined,
+        provider: typeof body.provider==='string'?body.provider:undefined,
+        model: typeof body.model==='string'?body.model:undefined,
+        reasoning: body.reasoning==='off'||body.reasoning==='standard'||body.reasoning==='deep'?body.reasoning:undefined,
+      });
+      return json(result,201);
+    } catch(error) {
+      return json({error:error instanceof Error?error.message:'启动失败。'},500);
+    }
+  }
+
   if(url.pathname==='/api/games') {
     if(method==='GET')return json(listGames());
     if(method==='POST'){
@@ -35,7 +54,7 @@ export async function handleApi(request:Request):Promise<Response> {
       return json({ok:true,finished:result.state.stage==='END'});
     } catch(error) {
       const message=error instanceof Error?error.message:'推进失败，请重试。';
-      saveError(id,message,error instanceof TurnError?error.logs:[]);
+      saveError(id,message,error instanceof Error&&error instanceof TurnError?error.logs:[]);
       return json({error:message},502);
     } finally { runningTurns.delete(id); }
   }
