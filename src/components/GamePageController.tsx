@@ -4,9 +4,10 @@ import { GameLauncher } from './GameLauncher';
 
 interface GamePageControllerProps {
   gameId?: string;
+  god?: boolean;
 }
 
-export function GamePageController({ gameId }: GamePageControllerProps) {
+export function GamePageController({ gameId, god }: GamePageControllerProps) {
   const [activeGameId, setActiveGameId] = useState<string | undefined>(gameId);
 
   useEffect(() => {
@@ -14,7 +15,7 @@ export function GamePageController({ gameId }: GamePageControllerProps) {
   }, [gameId]);
 
   if (activeGameId) {
-    return <GameObserver gameId={activeGameId} />;
+    return <GameObserver gameId={activeGameId} god={god} />;
   }
 
   return <GameLauncher onStarted={setActiveGameId} />;
