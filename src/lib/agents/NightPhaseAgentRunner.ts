@@ -20,10 +20,6 @@ export interface NightAgentContext {
   privateInfo: unknown;
 }
 
-/**
- * Night phase adapter.
- * The engine validates permissions and resolves rules after decisions are returned.
- */
 export class NightPhaseAgentRunner {
   constructor(private readonly agents: Map<string, PlayerAgent>) {}
 
@@ -34,14 +30,13 @@ export class NightPhaseAgentRunner {
     const decision = await agent.decide({
       role: context.playerId,
       visibleEvents: context.visibleEvents,
-      memory: {},
-      belief: {},
+      memory: { facts: [], claims: [], beliefs: [] },
     });
 
     return {
       playerId: context.playerId,
       type: decision.action as NightActionType,
-      targetId: decision.target,
+      targetId: decision.target?.toString(),
     };
   }
 }
