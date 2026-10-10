@@ -23,3 +23,7 @@ export interface AgentDecision {
   summary: string;
   confidence: number;
 }
+
+export interface PlayerAgent {
+  decide(context: PlayerAgentContext): Promise<AgentDecision>;
+}
