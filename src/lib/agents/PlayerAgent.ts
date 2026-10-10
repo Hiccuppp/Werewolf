@@ -2,7 +2,11 @@ import type { LLMProvider } from '../llm/provider';
 import { buildPlayerPrompt } from './PromptBuilder';
 import type { AgentDecision, PlayerAgentContext } from './types';
 
-export class LLMPlayerAgent {
+export interface PlayerAgent {
+  decide(context: PlayerAgentContext): Promise<AgentDecision>;
+}
+
+export class LLMPlayerAgent implements PlayerAgent {
   constructor(private provider: LLMProvider) {}
 
   async decide(context: PlayerAgentContext): Promise<AgentDecision> {
