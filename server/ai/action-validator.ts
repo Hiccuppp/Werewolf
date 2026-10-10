@@ -11,31 +11,31 @@ export interface ValidatedAgentAction {
   accepted: boolean;
   decision: AgentDecision;
   reason?: string;
+  get ok(): boolean;
 }
 
 export function validateAgentAction(
   decision: AgentDecision,
   context: ActionValidationContext,
 ): ValidatedAgentAction {
+  const result = (accepted: boolean, reason?: string): ValidatedAgentAction => ({
+    accepted,
+    decision,
+    reason,
+    get ok() { return accepted; },
+  });
+
   if (!context.alive && decision.action !== 'pass') {
-    return { accepted: false, decision, reason: 'player_not_alive' };
+    return result(false, 'player_not_alive');
   }
-
   if (!context.allowedActions.includes(decision.action)) {
-    return { accepted: false, decision, reason: 'action_not_allowed' };
+    return result(false, 'action_not_allowed');
   }
-
   if (decision.action === 'vote' && context.canVote === false) {
-    return { accepted: false, decision, reason: 'no_vote_right' };
+    return result(false, 'no_vote_right');
   }
-
-  if (
-    decision.target !== undefined &&
-    context.allowedTargets &&
-    !context.allowedTargets.includes(decision.target)
-  ) {
-    return { accepted: false, decision, reason: 'invalid_target' };
+  if (decision.target !== undefined && context.allowedTargets && !context.allowedTargets.includes(decision.target)) {
+    return result(false, 'invalid_target');
   }
-
-  return { accepted: true, decision };
+  return result(true);
 }
