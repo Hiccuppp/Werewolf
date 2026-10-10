@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { GameTable, type PlayerSeat } from "./GameTable";
 
 export type GameEvent = {
   type: string;
@@ -9,8 +10,18 @@ export type GameEvent = {
 export function GameObserver({ gameId }: { gameId: string }) {
   const [events, setEvents] = useState<GameEvent[]>([]);
   const [phase, setPhase] = useState("WAITING");
+  const [players, setPlayers] = useState<PlayerSeat[]>([]);
 
   useEffect(() => {
+    fetch(`/api/games/${gameId}/state`)
+      .then((response) => response.json())
+      .then((state) => {
+        if (Array.isArray(state.players)) {
+          setPlayers(state.players);
+        }
+      })
+      .catch(() => undefined);
+
     const source = new EventSource(`/api/games/${gameId}/events/stream`);
 
     source.onmessage = (message) => {
@@ -28,14 +39,7 @@ export function GameObserver({ gameId }: { gameId: string }) {
     <main>
       <h1>AI Werewolf</h1>
       <section>Phase: {phase}</section>
-      <section>
-        {events.map((event, index) => (
-          <article key={index}>
-            {event.playerId ? `Player ${event.playerId}: ` : ""}
-            {event.content ?? event.type}
-          </article>
-        ))}
-      </section>
+      <GameTable players={players} events={events} />
     </main>
   );
 }
