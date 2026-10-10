@@ -6,7 +6,7 @@ export interface AIGameBootstrapConfig {
   boardId: string;
   playerCount: number;
   maxRounds?: number;
-  adapter: AIGameEngineAdapter;
+  adapter?: AIGameEngineAdapter;
 }
 
 export interface AIGameBootstrapResult {
@@ -25,7 +25,7 @@ export class AIGameBootstrap {
         boardId: config.boardId,
         playerCount: config.playerCount,
       },
-      config.adapter,
+      config.adapter as AIGameEngineAdapter,
     );
 
     return {
