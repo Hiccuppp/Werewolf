@@ -1,5 +1,5 @@
-import { AIGameBootstrap } from './ai-game-bootstrap';
-import { GameSessionFactory } from './game-session-factory';
+import { AIGameBootstrap } from './ai-game-bootstrap.ts';
+import { GameSessionFactory } from './game-session-factory.ts';
 
 export interface StartAIGameOptions {
   boardId?: string;
