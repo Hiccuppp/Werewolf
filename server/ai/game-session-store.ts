@@ -37,3 +37,5 @@ export class GameSessionStore<T = unknown> {
     return this.sessions.delete(id);
   }
 }
+
+export const gameSessionStore = new GameSessionStore();

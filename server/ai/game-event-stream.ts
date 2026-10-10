@@ -35,3 +35,9 @@ export class GameEventStream {
     };
   }
 }
+
+export const gameEventStream = new GameEventStream();
+
+export function subscribeGameEvents(gameId: string, listener: GameEventListener): () => void {
+  return gameEventStream.subscribe(gameId, listener);
+}
