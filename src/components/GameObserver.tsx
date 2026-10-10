@@ -7,7 +7,12 @@ export type GameEvent = {
   playerId?: string;
 };
 
-export function GameObserver({ gameId }: { gameId: string }) {
+interface GameObserverProps {
+  gameId: string;
+  god?: boolean;
+}
+
+export function GameObserver({ gameId, god }: GameObserverProps) {
   const [events, setEvents] = useState<GameEvent[]>([]);
   const [phase, setPhase] = useState("WAITING");
   const [players, setPlayers] = useState<PlayerSeat[]>([]);
@@ -38,6 +43,7 @@ export function GameObserver({ gameId }: { gameId: string }) {
   return (
     <main>
       <h1>AI Werewolf</h1>
+      {god && <section>God Mode</section>}
       <section>Phase: {phase}</section>
       <GameTable players={players} events={events} />
     </main>
