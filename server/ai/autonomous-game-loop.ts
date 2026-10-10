@@ -1,4 +1,4 @@
-import type { AIGameEngineAdapter } from './game-engine-adapter';
+import type { AIGameEngineAdapter } from './game-engine-adapter.ts';
 
 export interface AutonomousLoopOptions {
   maxRounds?: number;
@@ -10,7 +10,11 @@ export interface AutonomousLoopOptions {
  * The rule engine remains responsible for phase transitions and victory checks.
  */
 export class AutonomousGameLoop {
-  constructor(private readonly adapter: AIGameEngineAdapter) {}
+  private readonly adapter: AIGameEngineAdapter;
+
+  constructor(adapter: AIGameEngineAdapter) {
+    this.adapter = adapter;
+  }
 
   async run(options: AutonomousLoopOptions = {}) {
     const maxRounds = options.maxRounds ?? 100;
