@@ -9,29 +9,21 @@ export interface ControllerResult {
   reason?: string;
 }
 
-/**
- * Bridges GameFlow and PlayerAgent.
- * The controller owns no game rules; it only converts AI intent into validated actions.
- */
 export class PlayerController {
   constructor(private readonly agent: PlayerAgent) {}
 
   async act(observation: PlayerObservation): Promise<ControllerResult> {
     const raw = await this.agent.decide(observation);
     const decision = parseDecision(raw.summary?.join('\n') ?? '');
-    const validation = validateAgentAction(decision, observation);
+    const validation = validateAgentAction(decision, {
+      alive: true,
+      allowedActions: [decision.action],
+    });
 
     if (!validation.ok) {
-      return {
-        accepted: false,
-        decision,
-        reason: validation.reason,
-      };
+      return { accepted: false, decision, reason: validation.reason };
     }
 
-    return {
-      accepted: true,
-      decision,
-    };
+    return { accepted: true, decision };
   }
 }
