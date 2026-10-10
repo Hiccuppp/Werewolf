@@ -1,6 +1,6 @@
-import { AutonomousGameLoop } from './autonomous-game-loop';
-import { GameSessionFactory } from './game-session-factory';
-import type { AIGameEngineAdapter } from './game-engine-adapter';
+import { AutonomousGameLoop } from './autonomous-game-loop.ts';
+import { GameSessionFactory } from './game-session-factory.ts';
+import type { AIGameEngineAdapter } from './game-engine-adapter.ts';
 
 export interface AIGameBootstrapConfig {
   boardId: string;
@@ -17,7 +17,11 @@ export interface AIGameBootstrapResult {
 }
 
 export class AIGameBootstrap {
-  constructor(private readonly factory: GameSessionFactory) {}
+  private readonly factory: GameSessionFactory;
+
+  constructor(factory: GameSessionFactory) {
+    this.factory = factory;
+  }
 
   create(config: AIGameBootstrapConfig): AIGameBootstrapResult {
     const session = this.factory.create(
