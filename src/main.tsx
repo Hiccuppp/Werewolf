@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import GamePageController from './components/GamePageController.tsx';
+import { GamePageController } from './components/GamePageController.tsx';
 import { AppHeader } from './components/app-header.tsx';
 import './styles.css';
 
@@ -9,5 +9,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <>
     <AppHeader />
     <GamePageController gameId={match?.[1]} god={!!match?.[2]} />
-  </>
+  </>,
 );
